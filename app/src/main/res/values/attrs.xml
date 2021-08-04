@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FarmLandView">
-        <attr name="farm_land_color" format="color"/>
+        <attr name="farm_land_color" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="WaterInputSrcView">
+        <attr name="water_input_source_view" format="enum" />
+    </declare-styleable>
+
+    <declare-styleable name="WaterOutPutSrcView">
+        <attr name="water_output_source_view" format="color" />
+    </declare-styleable>
+
+
 </resources>

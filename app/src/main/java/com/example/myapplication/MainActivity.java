@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.myapplication.Canvas.FarmLandView;
+import com.example.myapplication.Canvas.WaterInputSrcView;
+import com.example.myapplication.Canvas.WaterOutPutView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         farmLand = new FarmLandView(this);
+        WaterInputSrcView waterInputSrcViewInput = new WaterInputSrcView(this);
+        waterInputSrcViewInput.setLatitude(100);
+        waterInputSrcViewInput.setLongitude(100);
+        WaterOutPutView waterOutSrcViewOutput = new WaterOutPutView(this);
+        waterOutSrcViewOutput.setLatitude(800);
+        waterOutSrcViewOutput.setLatitude(800);
         List<Double> lt = new ArrayList<>();
         List<Double> ln = new ArrayList<>();
         lt.add(36.39776);
@@ -53,12 +61,27 @@ public class MainActivity extends AppCompatActivity {
         }
        farmLand.setPointList(pointList);
 
+        //add farmLand to activity
         RelativeLayout relativeLayout = findViewById(R.id.mainLayout);
         RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_LEFT,RelativeLayout.TRUE);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
         params.leftMargin=10;
         relativeLayout.addView(farmLand,params);
+
+        RelativeLayout.LayoutParams params1=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_LEFT,RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+        params.leftMargin=10;
+        relativeLayout.addView(waterInputSrcViewInput,params1);
+
+        RelativeLayout.LayoutParams params2=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_LEFT,RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+        params.leftMargin=10;
+        relativeLayout.addView(waterOutSrcViewOutput,params2);
+
+
     }
 
 

@@ -45,12 +45,6 @@ public class FarmLandView extends View {
             }
             path.lineTo(pointList.get(0).x,pointList.get(0).y);
         }
-
-  /*      path.moveTo(50, 50);
-        path.lineTo(50, 500);
-        path.lineTo(200, 500);
-        path.lineTo(200, 300);
-        path.lineTo(350, 300);*/
     }
 
 
