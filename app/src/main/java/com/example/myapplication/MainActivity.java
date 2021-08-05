@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.myapplication.Canvas.FarmLandView;
+import com.example.myapplication.Canvas.MainCrossView;
+import com.example.myapplication.Canvas.SubCrossView;
 import com.example.myapplication.Canvas.WaterInputSrcView;
 import com.example.myapplication.Canvas.WaterOutPutView;
 
@@ -35,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
         WaterOutPutView waterOutSrcViewOutput = new WaterOutPutView(this);
         waterOutSrcViewOutput.setLatitude(800);
         waterOutSrcViewOutput.setLatitude(800);
+        MainCrossView mainCrossView=new MainCrossView(this);
+        mainCrossView.setValue("30");
+        SubCrossView subCrossView =new SubCrossView(this);
+        subCrossView.setValue("50");
         List<Double> lt = new ArrayList<>();
         List<Double> ln = new ArrayList<>();
         lt.add(36.39776);
@@ -80,6 +86,18 @@ public class MainActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
         params.leftMargin=10;
         relativeLayout.addView(waterOutSrcViewOutput,params2);
+
+        RelativeLayout.LayoutParams params3=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_LEFT,RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+        params.leftMargin=10;
+        relativeLayout.addView(mainCrossView,params3);
+
+        RelativeLayout.LayoutParams params4=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_LEFT,RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+        params.leftMargin=10;
+        relativeLayout.addView(subCrossView,params4);
 
 
     }

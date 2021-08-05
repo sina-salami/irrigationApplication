@@ -12,5 +12,12 @@
         <attr name="water_output_source_view" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="MainCrossView">
+        <attr name="main_cross_view" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="SubCrossView">
+        <attr name="sub_cross_view" format="color" />
+    </declare-styleable>
 
 </resources>
