@@ -20,4 +20,16 @@
         <attr name="sub_cross_view" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="BasinView">
+        <attr name="basin_view" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="BorderView">
+        <attr name="border_view" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="FurrowView">
+        <attr name="furrow_view" format="color" />
+    </declare-styleable>
+
 </resources>

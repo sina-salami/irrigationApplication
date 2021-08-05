@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -14,6 +15,7 @@ import com.example.myapplication.Canvas.WaterInputSrcView;
 import com.example.myapplication.Canvas.WaterOutPutView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -98,6 +100,17 @@ public class MainActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
         params.leftMargin=10;
         relativeLayout.addView(subCrossView,params4);
+        //todo why i got 0,0 with one element ??
+       /* List<Double>testlat=new ArrayList<>();
+        List<Double>testlang=new ArrayList<>();
+        testlat.add(36.5678);
+        testlang.add(54.987);
+      List <Integer[]>l1= convertLatLongToXY(testlat,testlang);
+      if(l1.size()!=0){
+          Log.d("tst", String.valueOf(l1.get(0)[0]));}*/
+
+
+
 
 
     }
