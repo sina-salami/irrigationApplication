@@ -32,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         farmLand = new FarmLandView(this);
         WaterInputSrcView waterInputSrcViewInput = new WaterInputSrcView(this);
-        waterInputSrcViewInput.setLatitude(100);
-        waterInputSrcViewInput.setLongitude(100);
+        waterInputSrcViewInput.setLatitude(150);
+        waterInputSrcViewInput.setLongitude(500);
         WaterOutPutView waterOutSrcViewOutput = new WaterOutPutView(this);
         waterOutSrcViewOutput.setLatitude(800);
-        waterOutSrcViewOutput.setLatitude(800);
+        waterOutSrcViewOutput.setLongitude(900);
         MainCrossView mainCrossView=new MainCrossView(this);
         mainCrossView.setValue("30");
         SubCrossView subCrossView =new SubCrossView(this);

@@ -49,6 +49,6 @@ public class WaterOutPutView extends View {
         super.onDraw(canvas);
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);
-        canvas.drawCircle(100, 700, 20, paint);
+        canvas.drawCircle(latitude, longitude, 20, paint);
     }
 }
