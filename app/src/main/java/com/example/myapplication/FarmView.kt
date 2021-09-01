@@ -46,8 +46,7 @@ class FarmView @JvmOverloads constructor(
         }
 
     private val _tempPoint = PointF()
-    private val fieldRect =
-        RectD(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
+    private val fieldRect = RectD()
     private val fieldPath = Path()
     private val fieldPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -171,6 +170,11 @@ class FarmView @JvmOverloads constructor(
     }
 
     private fun refreshFieldRect() {
+        fieldRect.left = Double.MAX_VALUE
+        fieldRect.top = Double.MAX_VALUE
+        fieldRect.right = Double.MIN_VALUE
+        fieldRect.bottom = Double.MIN_VALUE
+
         for (coordinate in fieldCoordinates) {
             fieldRect.top = minOf(fieldRect.top, coordinate.y)
             fieldRect.bottom = maxOf(fieldRect.bottom, coordinate.y)
