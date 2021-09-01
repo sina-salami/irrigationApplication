@@ -13,5 +13,6 @@ class RootActivity : AppCompatActivity() {
         binding.farm.fieldCoordinates = DataFactory.miladTowerCoordinates
         binding.farm.waterEntrance = DataFactory.miladEntrance
         binding.farm.waterOutlet = DataFactory.miladOutlet
+        binding.farm.slopeXY = 20f to 14.4f
     }
 }

@@ -1,13 +1,17 @@
 package com.example.myapplication
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
+import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
+import androidx.core.graphics.withRotation
 import kotlin.math.abs
 
 class FarmView @JvmOverloads constructor(
@@ -35,6 +39,11 @@ class FarmView @JvmOverloads constructor(
             refreshFieldRect()
             invalidate()
         }
+    var slopeXY: Pair<Float, Float>? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private val _tempPoint = PointF()
     private val fieldRect =
@@ -60,10 +69,28 @@ class FarmView @JvmOverloads constructor(
         alpha = 128
     }
 
+    private val slopeArrowPath = Path()
+    private val slopeArrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 2f.toPx
+        color = Color.BLACK
+    }
+    private val slopeTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = Color.BLACK
+        textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            10f,
+            Resources.getSystem().displayMetrics
+        )
+        textAlign = Paint.Align.CENTER
+    }
+
     override fun onDraw(canvas: Canvas) {
         drawField(canvas)
         drawWaterEntrance(canvas)
         drawWaterOutlet(canvas)
+        drawSlopeArrows(canvas)
     }
 
     private fun drawField(canvas: Canvas) {
@@ -95,6 +122,30 @@ class FarmView @JvmOverloads constructor(
         val point = convert(finalOutlet, _tempPoint)
 
         canvas.drawCircle(point.x + offsetX(), point.y + offsetY(), 6f.toPx, waterOutletPaint)
+    }
+
+    private fun drawSlopeArrows(canvas: Canvas) {
+        val finalSlope = slopeXY ?: return
+
+        val arrowSize = 10f.toPx
+        val centerY = paddingTop.toFloat()
+        val centerX = paddingLeft.toFloat() + arrowSize
+        slopeArrowPath.moveTo(centerX, centerY)
+        slopeArrowPath.rLineTo(-arrowSize / 2, arrowSize)
+        slopeArrowPath.moveTo(centerX, centerY)
+        slopeArrowPath.rLineTo(arrowSize / 2, arrowSize)
+        slopeArrowPath.moveTo(centerX, centerY)
+        slopeArrowPath.rLineTo(0f, arrowSize * 2)
+
+        canvas.drawPath(slopeArrowPath, slopeArrowPaint)
+
+        canvas.withRotation(90f, centerX, centerY + arrowSize * 2) {
+            canvas.drawPath(slopeArrowPath, slopeArrowPaint)
+        }
+
+        val text = "${finalSlope.first},${finalSlope.second}"
+        val textHeight = 16.toPx // shout use Paint#getTextBounds
+        canvas.drawText(text, centerX, centerY + arrowSize * 2 + textHeight, slopeTextPaint)
     }
 
     private fun offsetX(): Float {
@@ -143,7 +194,7 @@ class FarmView @JvmOverloads constructor(
     }
 
     init {
-        if (isInEditMode)
+        if (isInEditMode) {
             fieldCoordinates = listOf(
                 Coordinate(51.3673715262361, 35.74505358990784),
                 Coordinate(51.37027891200881, 35.73837003960733),
@@ -152,8 +203,10 @@ class FarmView @JvmOverloads constructor(
                 Coordinate(51.37554714944172, 35.74552452283459),
                 Coordinate(51.375614240000, 35.74124283459),
             )
-        waterEntrance = Coordinate(51.3803715262361, 35.73905358990784)
-        waterOutlet = Coordinate(51.3673715262361, 35.74905358990784)
+            waterEntrance = Coordinate(51.3803715262361, 35.73905358990784)
+            waterOutlet = Coordinate(51.3673715262361, 35.74905358990784)
+            slopeXY = 22.3f to 45.3f
+        }
     }
 
     private fun convert(coordinate: Coordinate, outPoint: PointF): PointF {
@@ -172,6 +225,7 @@ class FarmView @JvmOverloads constructor(
     }
 
     data class Coordinate(val x: Double, val y: Double)
+
     data class RectD(
         var left: Double = 0.0,
         var top: Double = 0.0,
