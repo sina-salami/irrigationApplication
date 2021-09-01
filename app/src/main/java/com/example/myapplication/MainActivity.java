@@ -1,12 +1,13 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Canvas.FarmLandView;
 import com.example.myapplication.Canvas.MainCrossView;
@@ -15,7 +16,6 @@ import com.example.myapplication.Canvas.WaterInputSrcView;
 import com.example.myapplication.Canvas.WaterOutPutView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.btn_new).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RootActivity.class));
+            }
+        });
         farmLand = new FarmLandView(this);
         WaterInputSrcView waterInputSrcViewInput = new WaterInputSrcView(this);
         waterInputSrcViewInput.setLatitude(150);
@@ -39,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         WaterOutPutView waterOutSrcViewOutput = new WaterOutPutView(this);
         waterOutSrcViewOutput.setLatitude(800);
         waterOutSrcViewOutput.setLongitude(900);
-        MainCrossView mainCrossView=new MainCrossView(this);
+        MainCrossView mainCrossView = new MainCrossView(this);
         mainCrossView.setValue("30");
-        SubCrossView subCrossView =new SubCrossView(this);
+        SubCrossView subCrossView = new SubCrossView(this);
         subCrossView.setValue("50");
         List<Double> lt = new ArrayList<>();
         List<Double> ln = new ArrayList<>();
