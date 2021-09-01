@@ -29,6 +29,12 @@ class FarmView @JvmOverloads constructor(
             refreshFieldRect()
             invalidate()
         }
+    var waterOutlet: Coordinate? = null
+        set(value) {
+            field = value
+            refreshFieldRect()
+            invalidate()
+        }
 
     private val _tempPoint = PointF()
     private val fieldRect =
@@ -48,9 +54,16 @@ class FarmView @JvmOverloads constructor(
         alpha = 128
     }
 
+    private val waterOutletPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = Color.BLACK
+        alpha = 128
+    }
+
     override fun onDraw(canvas: Canvas) {
         drawField(canvas)
         drawWaterEntrance(canvas)
+        drawWaterOutlet(canvas)
     }
 
     private fun drawField(canvas: Canvas) {
@@ -75,6 +88,13 @@ class FarmView @JvmOverloads constructor(
         val point = convert(finalEntrance, _tempPoint)
 
         canvas.drawCircle(point.x + offsetX(), point.y + offsetY(), 10f.toPx, waterEntrancePaint)
+    }
+
+    private fun drawWaterOutlet(canvas: Canvas) {
+        val finalOutlet = waterOutlet ?: return
+        val point = convert(finalOutlet, _tempPoint)
+
+        canvas.drawCircle(point.x + offsetX(), point.y + offsetY(), 6f.toPx, waterOutletPaint)
     }
 
     private fun offsetX(): Float {
@@ -113,6 +133,13 @@ class FarmView @JvmOverloads constructor(
             fieldRect.left = minOf(fieldRect.left, it.x)
             fieldRect.right = maxOf(fieldRect.right, it.x)
         }
+
+        waterOutlet?.let {
+            fieldRect.top = minOf(fieldRect.top, it.y)
+            fieldRect.bottom = maxOf(fieldRect.bottom, it.y)
+            fieldRect.left = minOf(fieldRect.left, it.x)
+            fieldRect.right = maxOf(fieldRect.right, it.x)
+        }
     }
 
     init {
@@ -126,6 +153,7 @@ class FarmView @JvmOverloads constructor(
                 Coordinate(51.375614240000, 35.74124283459),
             )
         waterEntrance = Coordinate(51.3803715262361, 35.73905358990784)
+        waterOutlet = Coordinate(51.3673715262361, 35.74905358990784)
     }
 
     private fun convert(coordinate: Coordinate, outPoint: PointF): PointF {

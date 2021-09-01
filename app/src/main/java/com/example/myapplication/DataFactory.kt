@@ -18,5 +18,6 @@ object DataFactory {
         FarmView.Coordinate(51.3798550876044, 35.74130467651047),
         FarmView.Coordinate(51.37554714944172, 35.74552452283459)
     )
-    val miladEntrance = FarmView.Coordinate(51.365876044, 35.74130467651047)
+    val miladEntrance = FarmView.Coordinate(51.365876044, 35.74120467651047)
+    val miladOutlet = FarmView.Coordinate(51.375876044, 35.74655967651047)
 }
