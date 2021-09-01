@@ -23,27 +23,40 @@ class FarmView @JvmOverloads constructor(
             refreshFieldRect()
             invalidate()
         }
+    var waterEntrance: Coordinate? = null
+        set(value) {
+            field = value
+            refreshFieldRect()
+            invalidate()
+        }
 
-    private val _fieldPoint = PointF()
+    private val _tempPoint = PointF()
     private val fieldRect =
         RectD(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
     private val fieldPath = Path()
-    private val fieldPaint = Paint().apply {
-        isAntiAlias = true
+    private val fieldPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = Color.RED
         alpha = 128
         strokeWidth = 2f.toPx
     }
 
+
+    private val waterEntrancePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = Color.BLUE
+        alpha = 128
+    }
+
     override fun onDraw(canvas: Canvas) {
         drawField(canvas)
+        drawWaterEntrance(canvas)
     }
 
     private fun drawField(canvas: Canvas) {
         fieldPath.reset()
         fieldCoordinates.forEach {
-            val point = convert(it, _fieldPoint)
+            val point = convert(it, _tempPoint)
 
             if (fieldPath.isEmpty)
                 fieldPath.moveTo(point.x, point.y)
@@ -55,6 +68,13 @@ class FarmView @JvmOverloads constructor(
         fieldPath.offset(offsetX(), offsetY())
 
         canvas.drawPath(fieldPath, fieldPaint)
+    }
+
+    private fun drawWaterEntrance(canvas: Canvas) {
+        val finalEntrance = waterEntrance ?: return
+        val point = convert(finalEntrance, _tempPoint)
+
+        canvas.drawCircle(point.x + offsetX(), point.y + offsetY(), 10f.toPx, waterEntrancePaint)
     }
 
     private fun offsetX(): Float {
@@ -86,6 +106,13 @@ class FarmView @JvmOverloads constructor(
             fieldRect.left = minOf(fieldRect.left, coordinate.x)
             fieldRect.right = maxOf(fieldRect.right, coordinate.x)
         }
+
+        waterEntrance?.let {
+            fieldRect.top = minOf(fieldRect.top, it.y)
+            fieldRect.bottom = maxOf(fieldRect.bottom, it.y)
+            fieldRect.left = minOf(fieldRect.left, it.x)
+            fieldRect.right = maxOf(fieldRect.right, it.x)
+        }
     }
 
     init {
@@ -98,6 +125,7 @@ class FarmView @JvmOverloads constructor(
                 Coordinate(51.37554714944172, 35.74552452283459),
                 Coordinate(51.375614240000, 35.74124283459),
             )
+        waterEntrance = Coordinate(51.3803715262361, 35.73905358990784)
     }
 
     private fun convert(coordinate: Coordinate, outPoint: PointF): PointF {

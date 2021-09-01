@@ -9,6 +9,7 @@ object DataFactory {
         FarmView.Coordinate(51.33924422569347, 35.69917284534645),
         FarmView.Coordinate(51.33894988019795, 35.70055926818212)
     )
+    val azadiEntrance = FarmView.Coordinate(51.33563029473552, 35.70028605774333)
 
     val miladTowerCoordinates = listOf(
         FarmView.Coordinate(51.3673715262361, 35.74505358990784),
@@ -17,4 +18,5 @@ object DataFactory {
         FarmView.Coordinate(51.3798550876044, 35.74130467651047),
         FarmView.Coordinate(51.37554714944172, 35.74552452283459)
     )
+    val miladEntrance = FarmView.Coordinate(51.365876044, 35.74130467651047)
 }

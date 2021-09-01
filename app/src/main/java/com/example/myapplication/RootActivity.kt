@@ -10,6 +10,7 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(ActivityRootBinding.inflate(layoutInflater).also { binding = it }.root)
 
-        binding.farm.fieldCoordinates = DataFactory.azadiTowerCoordinates
+        binding.farm.fieldCoordinates = DataFactory.miladTowerCoordinates
+        binding.farm.waterEntrance = DataFactory.miladEntrance
     }
 }
