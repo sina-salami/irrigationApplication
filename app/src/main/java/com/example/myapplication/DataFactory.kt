@@ -45,7 +45,7 @@ object DataFactory {
         )
     )
 
-    val random1Coordinate = listOf(
+    val area1Coordinates = listOf(
         FarmView.Coordinate(51.36135321737392, 35.73178870442762),
         FarmView.Coordinate(51.37861909692312, 35.7308034894134),
         FarmView.Coordinate(51.36824002724843, 35.72843100212392),
@@ -58,7 +58,7 @@ object DataFactory {
         FarmView.Coordinate(51.35926337611597, 35.73610501975674),
         FarmView.Coordinate(51.36135321737392, 35.73178870442762),
     )
-    val random2Coordinate = listOf(
+    val area2Coordinates = listOf(
         FarmView.Coordinate(51.36557942093578, 35.71416220989575),
         FarmView.Coordinate(51.35465785161838, 35.71351100418279),
         FarmView.Coordinate(51.3547300982766, 35.70783630549784),
@@ -70,13 +70,6 @@ object DataFactory {
         FarmView.Coordinate(51.36289869986608, 35.70821345624451),
         FarmView.Coordinate(51.37280356248115, 35.71119161513629),
         FarmView.Coordinate(51.36557942093578, 35.71416220989575)
-    )
-
-    val allCoordinates = listOf(
-        azadiTowerCoordinates,
-        miladTowerCoordinates,
-        random1Coordinate,
-        random2Coordinate
     )
 
     fun generateRandomCoordinatesBetween(

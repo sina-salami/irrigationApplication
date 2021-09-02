@@ -11,20 +11,28 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(ActivityRootBinding.inflate(layoutInflater).also { binding = it }.root)
 
-        binding.btnRandom.setOnClickListener {
-            bindSomeData()
+        binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked.not()) return@addOnButtonCheckedListener
+
+            when (checkedId) {
+                R.id.btn_milad ->
+                    bindSomeData(DataFactory.miladTowerCoordinates, DataFactory.miladFurrow)
+                R.id.btn_azadi ->
+                    bindSomeData(DataFactory.azadiTowerCoordinates)
+                R.id.btn_area1 ->
+                    bindSomeData(DataFactory.area1Coordinates)
+                R.id.btn_area2 ->
+                    bindSomeData(DataFactory.area2Coordinates)
+            }
         }
 
-        binding.farm.fieldCoordinates = DataFactory.miladTowerCoordinates
-        binding.farm.waterEntrance = DataFactory.miladEntrance
-        binding.farm.waterOutlet = DataFactory.miladOutlet
-        binding.farm.furrows = DataFactory.miladFurrow
-        binding.farm.slopeXY = 20f to 14.4f
-
+        binding.toggleGroup.check(R.id.btn_milad)
     }
 
-    private fun bindSomeData() {
-        val coordinates = DataFactory.allCoordinates.random()
+    private fun bindSomeData(
+        coordinates: List<FarmView.Coordinate>,
+        furrows: List<FarmView.Furrow> = emptyList()
+    ) {
 
         binding.farm.fieldCoordinates = coordinates
         binding.farm.waterEntrance = coordinates.random().run {
@@ -40,7 +48,8 @@ class RootActivity : AppCompatActivity() {
                 y = y + Random.nextDouble(0.002, 0.004)
             )
         }
+        binding.farm.furrows = furrows
 
-        binding.farm.slopeXY = Random.nextFloat() to Random.nextFloat()
+        binding.farm.slopeXY = Random.nextInt(90).toFloat() to Random.nextInt(90).toFloat()
     }
 }
