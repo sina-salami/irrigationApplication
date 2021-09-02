@@ -13,7 +13,10 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.graphics.withRotation
 import androidx.core.view.setPadding
+import org.locationtech.jts.algorithm.Length
 import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.linearref.LengthIndexedLine
 import kotlin.math.abs
 
 class FarmView @JvmOverloads constructor(
@@ -302,16 +305,26 @@ class FarmView @JvmOverloads constructor(
         return outPoint
     }
 
-
-    fun Coordinate.isBetween(previous: Coordinate, next: Coordinate): Boolean =
-        x in minOf(previous.x, next.x)..maxOf(previous.x, next.x) &&
-                y in minOf(previous.y, next.y)..maxOf(previous.y, next.y)
-
-
     data class Furrow(
         val coordinates: List<Coordinate>,
         val onSurfaceHead: Coordinate? = null
-    )
+    ) {
+        fun calculateTotalLength(): Double {
+            return Length.ofLine(GeometryFactory().coordinateSequenceFactory.create(coordinates.map {
+                Coordinate(it.x, it.y)
+            }.toTypedArray()))
+        }
+
+        fun calculateCoordinateOf(length: Double): Coordinate? {
+            val lineString = LengthIndexedLine(GeometryFactory().createLineString(coordinates.map {
+                Coordinate(it.x, it.y)
+            }.toTypedArray()))
+            if (lineString.isValidIndex(length).not()) return null
+
+            val extractPoint = lineString.extractPoint(length)
+            return Coordinate(extractPoint.x, extractPoint.y)
+        }
+    }
 
     data class RectD(
         var left: Double = 0.0,

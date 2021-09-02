@@ -29,6 +29,23 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
+        with(binding.sliderProgress) {
+            stepSize = 1f
+            valueFrom = 0f
+            valueTo = 60f
+            setValues(0f, 0f)
+            addOnChangeListener { slider, value, _ ->
+                binding.farm.furrows = binding.farm.furrows.map {
+                    val furrowTotalLength = it.calculateTotalLength()
+                    val progress = (value - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
+                    val furrowLength = furrowTotalLength * progress
+                    val headOfFurrow = it.calculateCoordinateOf(length = furrowLength)
+                    it.copy(onSurfaceHead = headOfFurrow)
+                }
+            }
+        }
+
+
         binding.toggleGroup.check(R.id.btn_milad)
     }
 
