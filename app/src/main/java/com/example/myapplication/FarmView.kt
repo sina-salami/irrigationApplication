@@ -29,25 +29,25 @@ class FarmView @JvmOverloads constructor(
     var fieldCoordinates = emptyList<Coordinate>()
         set(value) {
             field = value
-            refreshFieldRect()
+            refreshBounding()
             invalidate()
         }
     var furrows = emptyList<Furrow>()
         set(value) {
             field = value
-            refreshFieldRect()
+            refreshBounding()
             invalidate()
         }
     var waterEntrance: Coordinate? = null
         set(value) {
             field = value
-            refreshFieldRect()
+            refreshBounding()
             invalidate()
         }
     var waterOutlet: Coordinate? = null
         set(value) {
             field = value
-            refreshFieldRect()
+            refreshBounding()
             invalidate()
         }
     var slopeXY: Pair<Float, Float>? = null
@@ -57,8 +57,9 @@ class FarmView @JvmOverloads constructor(
         }
 
     private val _tempPoint = PointF()
+    private val _tempPath = Path()
+
     private val fieldRect = RectD()
-    private val fieldPath = Path()
     private val fieldPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = Color.RED
@@ -91,7 +92,6 @@ class FarmView @JvmOverloads constructor(
         strokeWidth = 2f.toPx
     }
 
-    private val slopeArrowPath = Path()
     private val slopeArrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = 2f.toPx
@@ -118,20 +118,20 @@ class FarmView @JvmOverloads constructor(
     }
 
     private fun drawField(canvas: Canvas) {
-        fieldPath.reset()
+        _tempPath.reset()
         fieldCoordinates.forEach {
             val point = convert(it, _tempPoint)
 
-            if (fieldPath.isEmpty)
-                fieldPath.moveTo(point.x, point.y)
+            if (_tempPath.isEmpty)
+                _tempPath.moveTo(point.x, point.y)
             else
-                fieldPath.lineTo(point.x, point.y)
+                _tempPath.lineTo(point.x, point.y)
         }
-        fieldPath.close()
+        _tempPath.close()
 
-        fieldPath.offset(offsetX(), offsetY())
+        _tempPath.offset(offsetX(), offsetY())
 
-        canvas.drawPath(fieldPath, fieldPaint)
+        canvas.drawPath(_tempPath, fieldPaint)
     }
 
     private fun drawWaterEntrance(canvas: Canvas) {
@@ -150,49 +150,49 @@ class FarmView @JvmOverloads constructor(
 
     private fun drawFurrows(canvas: Canvas) {
         for (furrow in furrows) {
-            fieldPath.reset()
+            _tempPath.reset()
 
             for (coordinate in furrow.coordinates) {
                 val point = convert(coordinate, _tempPoint)
 
-                if (fieldPath.isEmpty)
-                    fieldPath.moveTo(point.x, point.y)
+                if (_tempPath.isEmpty)
+                    _tempPath.moveTo(point.x, point.y)
                 else
-                    fieldPath.lineTo(point.x, point.y)
+                    _tempPath.lineTo(point.x, point.y)
             }
 
-            fieldPath.offset(offsetX(), offsetY())
+            _tempPath.offset(offsetX(), offsetY())
 
-            canvas.drawPath(fieldPath, furrowPaint)
+            canvas.drawPath(_tempPath, furrowPaint)
         }
     }
 
     private fun drawOnSurfaceFurrows(canvas: Canvas) {
         for (furrow in furrows) {
-            fieldPath.reset()
+            _tempPath.reset()
 
             var lastCoordinate: Coordinate? = null
             loop@ for (coordinate in furrow.coordinates) {
                 val point = convert(coordinate, _tempPoint)
 
                 when {
-                    fieldPath.isEmpty -> fieldPath.moveTo(point.x, point.y)
-                    furrow.onSurfaceHead != null &&
-                            lastCoordinate != null &&
+                    _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
+                    furrow.onSurfaceHead == null -> break@loop
+                    lastCoordinate != null &&
                             furrow.onSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
                         val onSurfacePoint = convert(furrow.onSurfaceHead, _tempPoint)
-                        fieldPath.lineTo(onSurfacePoint.x, onSurfacePoint.y)
+                        _tempPath.lineTo(onSurfacePoint.x, onSurfacePoint.y)
                         break@loop
                     }
                     else ->
-                        fieldPath.lineTo(point.x, point.y)
+                        _tempPath.lineTo(point.x, point.y)
 
                 }
                 lastCoordinate = coordinate
             }
-            fieldPath.offset(offsetX(), offsetY())
+            _tempPath.offset(offsetX(), offsetY())
 
-            canvas.drawPath(fieldPath, onSurfaceFurrowPaint)
+            canvas.drawPath(_tempPath, onSurfaceFurrowPaint)
         }
     }
 
@@ -202,17 +202,18 @@ class FarmView @JvmOverloads constructor(
         val arrowSize = 10f.toPx
         val centerY = paddingTop.toFloat()
         val centerX = paddingLeft.toFloat() + arrowSize
-        slopeArrowPath.moveTo(centerX, centerY)
-        slopeArrowPath.rLineTo(-arrowSize / 2, arrowSize)
-        slopeArrowPath.moveTo(centerX, centerY)
-        slopeArrowPath.rLineTo(arrowSize / 2, arrowSize)
-        slopeArrowPath.moveTo(centerX, centerY)
-        slopeArrowPath.rLineTo(0f, arrowSize * 2)
+        _tempPath.reset()
+        _tempPath.moveTo(centerX, centerY)
+        _tempPath.rLineTo(-arrowSize / 2, arrowSize)
+        _tempPath.moveTo(centerX, centerY)
+        _tempPath.rLineTo(arrowSize / 2, arrowSize)
+        _tempPath.moveTo(centerX, centerY)
+        _tempPath.rLineTo(0f, arrowSize * 2)
 
-        canvas.drawPath(slopeArrowPath, slopeArrowPaint)
+        canvas.drawPath(_tempPath, slopeArrowPaint)
 
         canvas.withRotation(90f, centerX, centerY + arrowSize * 2) {
-            canvas.drawPath(slopeArrowPath, slopeArrowPaint)
+            canvas.drawPath(_tempPath, slopeArrowPaint)
         }
 
         val text = "${finalSlope.first},${finalSlope.second}"
@@ -242,7 +243,7 @@ class FarmView @JvmOverloads constructor(
         return (abs(height - ((fieldRect.bottom - fieldRect.top) * multiple)) / 2f).toFloat()
     }
 
-    private fun refreshFieldRect() {
+    private fun refreshBounding() {
         fieldRect.left = Double.MAX_VALUE
         fieldRect.top = Double.MAX_VALUE
         fieldRect.right = Double.MIN_VALUE
@@ -309,16 +310,15 @@ class FarmView @JvmOverloads constructor(
         val coordinates: List<Coordinate>,
         val onSurfaceHead: Coordinate? = null
     ) {
+        private val geometryFactory = GeometryFactory()
+
         fun calculateTotalLength(): Double {
-            return Length.ofLine(GeometryFactory().coordinateSequenceFactory.create(coordinates.map {
-                Coordinate(it.x, it.y)
-            }.toTypedArray()))
+            return Length.ofLine(GeometryFactory().coordinateSequenceFactory.create(coordinates.toTypedArray()))
         }
 
         fun calculateCoordinateOf(length: Double): Coordinate? {
-            val lineString = LengthIndexedLine(GeometryFactory().createLineString(coordinates.map {
-                Coordinate(it.x, it.y)
-            }.toTypedArray()))
+            val lineString =
+                LengthIndexedLine(GeometryFactory().createLineString(coordinates.toTypedArray()))
             if (lineString.isValidIndex(length).not()) return null
 
             val extractPoint = lineString.extractPoint(length)

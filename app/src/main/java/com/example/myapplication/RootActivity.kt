@@ -34,10 +34,13 @@ class RootActivity : AppCompatActivity() {
             valueFrom = 0f
             valueTo = 60f
             setValues(0f, 0f)
-            addOnChangeListener { slider, value, _ ->
+            addOnChangeListener { slider, _, _ ->
+                val (firstValue, secondValue) = slider.values
+
                 binding.farm.furrows = binding.farm.furrows.map {
+                    val progress =
+                        (secondValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
                     val furrowTotalLength = it.calculateTotalLength()
-                    val progress = (value - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
                     val furrowLength = furrowTotalLength * progress
                     val headOfFurrow = it.calculateCoordinateOf(length = furrowLength)
                     it.copy(onSurfaceHead = headOfFurrow)
