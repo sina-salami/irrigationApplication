@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.graphics.withRotation
+import androidx.core.view.setPadding
 import kotlin.math.abs
 
 class FarmView @JvmOverloads constructor(
@@ -22,6 +23,12 @@ class FarmView @JvmOverloads constructor(
 
 
     var fieldCoordinates = emptyList<Coordinate>()
+        set(value) {
+            field = value
+            refreshFieldRect()
+            invalidate()
+        }
+    var furrows = emptyList<Furrow>()
         set(value) {
             field = value
             refreshFieldRect()
@@ -68,6 +75,12 @@ class FarmView @JvmOverloads constructor(
         alpha = 128
     }
 
+    private val furrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = Color.BLUE
+        strokeWidth = 2f.toPx
+    }
+
     private val slopeArrowPath = Path()
     private val slopeArrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -89,6 +102,7 @@ class FarmView @JvmOverloads constructor(
         drawField(canvas)
         drawWaterEntrance(canvas)
         drawWaterOutlet(canvas)
+        drawFurrows(canvas)
         drawSlopeArrows(canvas)
     }
 
@@ -121,6 +135,25 @@ class FarmView @JvmOverloads constructor(
         val point = convert(finalOutlet, _tempPoint)
 
         canvas.drawCircle(point.x + offsetX(), point.y + offsetY(), 6f.toPx, waterOutletPaint)
+    }
+
+    private fun drawFurrows(canvas: Canvas) {
+        for (furrow in furrows) {
+            fieldPath.reset()
+
+            for (coordinate in furrow.coordinates) {
+                val point = convert(coordinate, _tempPoint)
+
+                if (fieldPath.isEmpty)
+                    fieldPath.moveTo(point.x, point.y)
+                else
+                    fieldPath.lineTo(point.x, point.y)
+            }
+
+            fieldPath.offset(offsetX(), offsetY())
+
+            canvas.drawPath(fieldPath, furrowPaint)
+        }
     }
 
     private fun drawSlopeArrows(canvas: Canvas) {
@@ -195,20 +228,24 @@ class FarmView @JvmOverloads constructor(
             fieldRect.left = minOf(fieldRect.left, it.x)
             fieldRect.right = maxOf(fieldRect.right, it.x)
         }
+
+        for (furrow in furrows) {
+            for (coordinate in furrow.coordinates) {
+                fieldRect.top = minOf(fieldRect.top, coordinate.y)
+                fieldRect.bottom = maxOf(fieldRect.bottom, coordinate.y)
+                fieldRect.left = minOf(fieldRect.left, coordinate.x)
+                fieldRect.right = maxOf(fieldRect.right, coordinate.x)
+            }
+        }
     }
 
     init {
         if (isInEditMode) {
-            fieldCoordinates = listOf(
-                Coordinate(51.3673715262361, 35.74505358990784),
-                Coordinate(51.37027891200881, 35.73837003960733),
-                Coordinate(51.3755134676994, 35.73776272335922),
-                Coordinate(51.3798550876044, 35.74130467651047),
-                Coordinate(51.37554714944172, 35.74552452283459),
-                Coordinate(51.375614240000, 35.74124283459),
-            )
-            waterEntrance = Coordinate(51.3803715262361, 35.73905358990784)
-            waterOutlet = Coordinate(51.3673715262361, 35.74905358990784)
+            setPadding(48.toPx)
+            fieldCoordinates = DataFactory.miladTowerCoordinates
+            waterEntrance = DataFactory.miladEntrance
+            waterOutlet = DataFactory.miladOutlet
+            furrows = DataFactory.miladFurrow
             slopeXY = 22.3f to 45.3f
         }
     }
@@ -229,6 +266,7 @@ class FarmView @JvmOverloads constructor(
     }
 
     data class Coordinate(val x: Double, val y: Double)
+    data class Furrow(val coordinates: List<Coordinate>)
 
     data class RectD(
         var left: Double = 0.0,

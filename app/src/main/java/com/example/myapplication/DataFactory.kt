@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import kotlin.random.Random
+
 object DataFactory {
     val azadiTowerCoordinates = listOf(
         FarmView.Coordinate(51.33894988019795, 35.70055926818212),
@@ -9,7 +11,6 @@ object DataFactory {
         FarmView.Coordinate(51.33924422569347, 35.69917284534645),
         FarmView.Coordinate(51.33894988019795, 35.70055926818212)
     )
-    val azadiEntrance = FarmView.Coordinate(51.33563029473552, 35.70028605774333)
 
     val miladTowerCoordinates = listOf(
         FarmView.Coordinate(51.3673715262361, 35.74505358990784),
@@ -20,6 +21,29 @@ object DataFactory {
     )
     val miladEntrance = FarmView.Coordinate(51.365876044, 35.74120467651047)
     val miladOutlet = FarmView.Coordinate(51.375876044, 35.74655967651047)
+    val miladFurrow = listOf(
+        FarmView.Furrow(
+            generateRandomCoordinatesBetween(
+                FarmView.Coordinate(51.371276044, 35.73895),
+                FarmView.Coordinate(51.370276044, 35.7445),
+                8
+            )
+        ),
+        FarmView.Furrow(
+            generateRandomCoordinatesBetween(
+                FarmView.Coordinate(51.3736, 35.73895),
+                FarmView.Coordinate(51.3722, 35.7435),
+                6
+            )
+        ),
+        FarmView.Furrow(
+            generateRandomCoordinatesBetween(
+                FarmView.Coordinate(51.3760, 35.74095),
+                FarmView.Coordinate(51.3745, 35.7445),
+                4
+            )
+        )
+    )
 
     val random1Coordinate = listOf(
         FarmView.Coordinate(51.36135321737392, 35.73178870442762),
@@ -55,4 +79,19 @@ object DataFactory {
         random2Coordinate
     )
 
+    fun generateRandomCoordinatesBetween(
+        start: FarmView.Coordinate,
+        end: FarmView.Coordinate,
+        count: Int
+    ): List<FarmView.Coordinate> {
+        return (0..count)
+            .map { Random.nextDouble(minOf(start.x, end.x), maxOf(start.x, end.x)) }
+            .reversed()
+            .zip(
+                (0..count)
+                    .map { Random.nextDouble(minOf(start.y, end.y), maxOf(start.y, end.y)) }
+                    .sorted()
+            )
+            .map { FarmView.Coordinate(it.first, it.second) }
+    }
 }
