@@ -38,12 +38,23 @@ class RootActivity : AppCompatActivity() {
                 val (firstValue, secondValue) = slider.values
 
                 binding.farm.furrows = binding.farm.furrows.map {
-                    val progress =
+                    val onSurfaceProgress =
                         (secondValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
+                    val underSurfaceProgress =
+                        (firstValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
+
                     val furrowTotalLength = it.calculateTotalLength()
-                    val furrowLength = furrowTotalLength * progress
-                    val headOfFurrow = it.calculateCoordinateOf(length = furrowLength)
-                    it.copy(onSurfaceHead = headOfFurrow)
+
+                    val onSurfaceLength = furrowTotalLength * onSurfaceProgress
+                    val underSurfaceLength = furrowTotalLength * underSurfaceProgress
+
+                    val headOfOnSurface = it.calculateCoordinateOf(length = onSurfaceLength)
+                    val headOfUnderSurface = it.calculateCoordinateOf(length = underSurfaceLength)
+
+                    it.copy(
+                        onSurfaceHead = headOfOnSurface,
+                        underSurfaceHead = headOfUnderSurface
+                    )
                 }
             }
         }

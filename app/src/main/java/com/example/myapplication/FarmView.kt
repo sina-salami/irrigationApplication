@@ -91,6 +91,12 @@ class FarmView @JvmOverloads constructor(
         color = Color.BLUE
         strokeWidth = 2f.toPx
     }
+    private val underSurfaceFurrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = Color.MAGENTA
+        strokeWidth = 10f.toPx
+        alpha = 128
+    }
 
     private val slopeArrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -112,6 +118,7 @@ class FarmView @JvmOverloads constructor(
         drawField(canvas)
         drawWaterEntrance(canvas)
         drawWaterOutlet(canvas)
+        drawUnderSurfaceFurrows(canvas)
         drawFurrows(canvas)
         drawOnSurfaceFurrows(canvas)
         drawSlopeArrows(canvas)
@@ -193,6 +200,35 @@ class FarmView @JvmOverloads constructor(
             _tempPath.offset(offsetX(), offsetY())
 
             canvas.drawPath(_tempPath, onSurfaceFurrowPaint)
+        }
+    }
+
+    private fun drawUnderSurfaceFurrows(canvas: Canvas) {
+        for (furrow in furrows) {
+            _tempPath.reset()
+
+            var lastCoordinate: Coordinate? = null
+            loop@ for (coordinate in furrow.coordinates) {
+                val point = convert(coordinate, _tempPoint)
+
+                when {
+                    _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
+                    furrow.underSurfaceHead == null -> break@loop
+                    lastCoordinate != null &&
+                            furrow.underSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
+                        val underSurfacePoint = convert(furrow.underSurfaceHead, _tempPoint)
+                        _tempPath.lineTo(underSurfacePoint.x, underSurfacePoint.y)
+                        break@loop
+                    }
+                    else ->
+                        _tempPath.lineTo(point.x, point.y)
+
+                }
+                lastCoordinate = coordinate
+            }
+            _tempPath.offset(offsetX(), offsetY())
+
+            canvas.drawPath(_tempPath, underSurfaceFurrowPaint)
         }
     }
 
@@ -308,7 +344,8 @@ class FarmView @JvmOverloads constructor(
 
     data class Furrow(
         val coordinates: List<Coordinate>,
-        val onSurfaceHead: Coordinate? = null
+        val onSurfaceHead: Coordinate? = null,
+        val underSurfaceHead: Coordinate? = null
     ) {
         private val geometryFactory = GeometryFactory()
 
