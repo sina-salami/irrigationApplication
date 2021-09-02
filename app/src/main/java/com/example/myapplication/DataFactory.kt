@@ -46,17 +46,23 @@ object DataFactory {
     )
 
     val area1Coordinates = listOf(
-        FarmView.Coordinate(51.36135321737392, 35.73178870442762),
-        FarmView.Coordinate(51.37861909692312, 35.7308034894134),
-        FarmView.Coordinate(51.36824002724843, 35.72843100212392),
-        FarmView.Coordinate(51.3713200034581, 35.72176766993188),
-        FarmView.Coordinate(51.38222792809884, 35.72562962654136),
-        FarmView.Coordinate(51.38809342007818, 35.73574893052375),
-        FarmView.Coordinate(51.38215813990917, 35.73575425483868),
-        FarmView.Coordinate(51.38242383492764, 35.74027235018919),
-        FarmView.Coordinate(51.37657770803551, 35.73644196681789),
-        FarmView.Coordinate(51.35926337611597, 35.73610501975674),
-        FarmView.Coordinate(51.36135321737392, 35.73178870442762),
+        FarmView.Coordinate(0.0, 0.0),
+        FarmView.Coordinate(100.0, 0.0),
+        FarmView.Coordinate(100.0, 100.0),
+        FarmView.Coordinate(0.0, 100.0),
+    )
+    val area1Furrow = listOf(
+        FarmView.Furrow(
+            listOf(
+                FarmView.Coordinate(10.0, 10.0),
+                FarmView.Coordinate(20.0, 10.0),
+                FarmView.Coordinate(20.0, 20.0),
+                FarmView.Coordinate(30.0, 20.0),
+                FarmView.Coordinate(30.0, 30.0),
+                FarmView.Coordinate(40.0, 30.0),
+                FarmView.Coordinate(40.0, 40.0),
+            ).reversed()
+        )
     )
     val area2Coordinates = listOf(
         FarmView.Coordinate(51.36557942093578, 35.71416220989575),

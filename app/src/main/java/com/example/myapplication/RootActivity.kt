@@ -22,7 +22,7 @@ class RootActivity : AppCompatActivity() {
                 R.id.btn_azadi ->
                     bindSomeData(DataFactory.azadiTowerCoordinates)
                 R.id.btn_area1 ->
-                    bindSomeData(DataFactory.area1Coordinates)
+                    bindSomeData(DataFactory.area1Coordinates, DataFactory.area1Furrow)
                 R.id.btn_area2 ->
                     bindSomeData(DataFactory.area2Coordinates)
             }
