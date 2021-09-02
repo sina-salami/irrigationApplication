@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityRootBinding
+import org.locationtech.jts.geom.Coordinate
 import kotlin.random.Random
 
 class RootActivity : AppCompatActivity() {
@@ -32,23 +33,18 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun bindSomeData(
-        coordinates: List<FarmView.Coordinate>,
+        coordinates: List<Coordinate>,
         furrows: List<FarmView.Furrow> = emptyList()
     ) {
 
         binding.farm.fieldCoordinates = coordinates
-        binding.farm.waterEntrance = coordinates.random().run {
-            copy(
-                x = x - Random.nextDouble(0.002, 0.004),
-                y = y - Random.nextDouble(0.002, 0.004)
-            )
+        binding.farm.waterEntrance = coordinates.random().copy().apply {
+            x -= Random.nextDouble(0.002, 0.004)
+            y -= Random.nextDouble(0.002, 0.004)
         }
-
-        binding.farm.waterOutlet = coordinates.random().run {
-            copy(
-                x = x + Random.nextDouble(0.002, 0.004),
-                y = y + Random.nextDouble(0.002, 0.004)
-            )
+        binding.farm.waterOutlet = coordinates.random().copy().apply {
+            x -= Random.nextDouble(0.002, 0.004)
+            y -= Random.nextDouble(0.002, 0.004)
         }
         binding.farm.furrows = furrows
 

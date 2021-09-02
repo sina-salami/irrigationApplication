@@ -13,6 +13,7 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.graphics.withRotation
 import androidx.core.view.setPadding
+import org.locationtech.jts.geom.Coordinate
 import kotlin.math.abs
 
 class FarmView @JvmOverloads constructor(
@@ -301,11 +302,11 @@ class FarmView @JvmOverloads constructor(
         return outPoint
     }
 
-    data class Coordinate(val x: Double, val y: Double) {
-        fun isBetween(previous: Coordinate, next: Coordinate): Boolean =
-            x in minOf(previous.x, next.x)..maxOf(previous.x, next.x) &&
-                    y in minOf(previous.y, next.y)..maxOf(previous.y, next.y)
-    }
+
+    fun Coordinate.isBetween(previous: Coordinate, next: Coordinate): Boolean =
+        x in minOf(previous.x, next.x)..maxOf(previous.x, next.x) &&
+                y in minOf(previous.y, next.y)..maxOf(previous.y, next.y)
+
 
     data class Furrow(
         val coordinates: List<Coordinate>,
