@@ -78,6 +78,12 @@ class FarmView @JvmOverloads constructor(
     private val furrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = Color.BLUE
+        alpha = 64
+        strokeWidth = 2f.toPx
+    }
+    private val onSurfaceFurrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = Color.BLUE
         strokeWidth = 2f.toPx
     }
 
@@ -103,6 +109,7 @@ class FarmView @JvmOverloads constructor(
         drawWaterEntrance(canvas)
         drawWaterOutlet(canvas)
         drawFurrows(canvas)
+        drawOnSurfaceFurrows(canvas)
         drawSlopeArrows(canvas)
     }
 
@@ -153,6 +160,35 @@ class FarmView @JvmOverloads constructor(
             fieldPath.offset(offsetX(), offsetY())
 
             canvas.drawPath(fieldPath, furrowPaint)
+        }
+    }
+
+    private fun drawOnSurfaceFurrows(canvas: Canvas) {
+        for (furrow in furrows) {
+            fieldPath.reset()
+
+            var lastCoordinate: Coordinate? = null
+            loop@ for (coordinate in furrow.coordinates) {
+                val point = convert(coordinate, _tempPoint)
+
+                when {
+                    fieldPath.isEmpty -> fieldPath.moveTo(point.x, point.y)
+                    furrow.onSurfaceHead != null &&
+                            lastCoordinate != null &&
+                            furrow.onSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
+                        val onSurfacePoint = convert(furrow.onSurfaceHead, _tempPoint)
+                        fieldPath.lineTo(onSurfacePoint.x, onSurfacePoint.y)
+                        break@loop
+                    }
+                    else ->
+                        fieldPath.lineTo(point.x, point.y)
+
+                }
+                lastCoordinate = coordinate
+            }
+            fieldPath.offset(offsetX(), offsetY())
+
+            canvas.drawPath(fieldPath, onSurfaceFurrowPaint)
         }
     }
 
@@ -265,8 +301,16 @@ class FarmView @JvmOverloads constructor(
         return outPoint
     }
 
-    data class Coordinate(val x: Double, val y: Double)
-    data class Furrow(val coordinates: List<Coordinate>)
+    data class Coordinate(val x: Double, val y: Double) {
+        fun isBetween(previous: Coordinate, next: Coordinate): Boolean =
+            x in minOf(previous.x, next.x)..maxOf(previous.x, next.x) &&
+                    y in minOf(previous.y, next.y)..maxOf(previous.y, next.y)
+    }
+
+    data class Furrow(
+        val coordinates: List<Coordinate>,
+        val onSurfaceHead: Coordinate? = null
+    )
 
     data class RectD(
         var left: Double = 0.0,

@@ -16,7 +16,9 @@ class RootActivity : AppCompatActivity() {
 
             when (checkedId) {
                 R.id.btn_milad ->
-                    bindSomeData(DataFactory.miladTowerCoordinates, DataFactory.miladFurrow)
+                    bindSomeData(
+                        DataFactory.miladTowerCoordinates,
+                        DataFactory.miladFurrow.map { it.copy(onSurfaceHead = it.coordinates.random()) })
                 R.id.btn_azadi ->
                     bindSomeData(DataFactory.azadiTowerCoordinates)
                 R.id.btn_area1 ->
