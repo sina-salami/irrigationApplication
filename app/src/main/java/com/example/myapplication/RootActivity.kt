@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityRootBinding
@@ -11,6 +12,10 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityRootBinding.inflate(layoutInflater).also { binding = it }.root)
+
+        binding.btnTransect.setOnClickListener {
+            startActivity(Intent(this, TransectActivity::class.java))
+        }
 
         binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked.not()) return@addOnButtonCheckedListener
@@ -58,7 +63,6 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
-
 
         binding.toggleGroup.check(R.id.btn_milad)
     }
