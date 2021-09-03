@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.withScale
@@ -17,7 +18,7 @@ class FurrowTransectView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private val isDebug = true
+    private val isDebug = false
 
     var highWidth: Float = 0f
         set(value) {
@@ -39,6 +40,14 @@ class FurrowTransectView @JvmOverloads constructor(
             field = value
             invalidate()
         }
+    var waterHeight: Float = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    private val _tempRectF = RectF()
+    private val _tempPath = Path()
 
     private val startPoint = PointF()
     private val point1 = PointF()
@@ -51,6 +60,14 @@ class FurrowTransectView @JvmOverloads constructor(
         color = Color.YELLOW
     }
 
+    private val waterPath = Path()
+    private val waterPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        strokeWidth = 4f.toPx
+        color = Color.BLUE
+    }
+
+
     private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         strokeWidth = 4f.toPx
@@ -59,6 +76,8 @@ class FurrowTransectView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         drawBedPath(canvas)
+
+        drawWater(canvas)
     }
 
     private fun drawBedPath(canvas: Canvas) {
@@ -91,6 +110,34 @@ class FurrowTransectView @JvmOverloads constructor(
                 canvas.drawCircle(endPoint.x, endPoint.y, 4f.toPx, debugPaint)
             }
         }
+
+        // close bed path to be able intersect bed a water paths
+        bedPath.lineTo(endPoint.x, startPoint.y)
+        bedPath.close()
+    }
+
+    private fun drawWater(canvas: Canvas) {
+        val water = waterHeight.toPx
+        val h = bedHeight.toPx
+
+        bedPath.computeBounds(_tempRectF, true)
+        val width = _tempRectF.width()
+
+        waterPath.reset()
+        waterPath.moveTo(0f, h - water)
+        waterPath.rLineTo(width, 0f)
+        waterPath.rLineTo(0f, water)
+        waterPath.rLineTo(-width, 0f)
+        waterPath.close()
+
+        _tempPath.reset()
+        _tempPath.op(waterPath, bedPath, Path.Op.INTERSECT)
+        canvas.withTranslation(paddingStart.toFloat(), paddingTop.toFloat()) {
+            canvas.drawPath(_tempPath, waterPaint)
+            canvas.withScale(x = -1f, pivotX = endPoint.x) {
+                drawPath(_tempPath, waterPaint)
+            }
+        }
     }
 
     init {
@@ -100,6 +147,7 @@ class FurrowTransectView @JvmOverloads constructor(
             middleWidth = 70f
             lowWidth = 20f
             bedHeight = 100f
+            waterHeight = 50f
         }
     }
 }
