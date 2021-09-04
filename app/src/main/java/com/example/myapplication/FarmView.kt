@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Point
 import android.graphics.PointF
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -24,7 +25,6 @@ class FarmView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-
 
     var fieldCoordinates = emptyList<Coordinate>()
         set(value) {
@@ -63,7 +63,6 @@ class FarmView @JvmOverloads constructor(
     private val fieldPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = Color.RED
-        alpha = 128
         strokeWidth = 2f.toPx
     }
 
