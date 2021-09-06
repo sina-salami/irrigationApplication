@@ -4,50 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggle_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:singleSelection="true">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_milad"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Milad" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_azadi"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Azadi" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_area1"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Area1" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_area2"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Area2" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
     <com.example.myapplication.FarmView
         android:id="@+id/farm"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="8dp"
         android:padding="30dp"
-        app:layout_constraintTop_toBottomOf="@id/toggle_group" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_label"
@@ -84,9 +47,9 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_transect"
-                android:text="Show Transect"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Show Transect" />
 
 
         </LinearLayout>

@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Point
 import android.graphics.PointF
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -14,6 +13,7 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.graphics.withRotation
 import androidx.core.view.setPadding
+import com.example.myapplication.data.DataFactory
 import org.locationtech.jts.algorithm.Length
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
@@ -251,7 +251,7 @@ class FarmView @JvmOverloads constructor(
             canvas.drawPath(_tempPath, slopeArrowPaint)
         }
 
-        val text = "${finalSlope.first},${finalSlope.second}"
+        val text = "${finalSlope.first}, ${finalSlope.second}"
         val textHeight = 16.toPx // shout use Paint#getTextBounds
         canvas.drawText(text, centerX, centerY + arrowSize * 2 + textHeight, slopeTextPaint)
     }
@@ -312,17 +312,6 @@ class FarmView @JvmOverloads constructor(
                 fieldRect.left = minOf(fieldRect.left, coordinate.x)
                 fieldRect.right = maxOf(fieldRect.right, coordinate.x)
             }
-        }
-    }
-
-    init {
-        if (isInEditMode) {
-            setPadding(48.toPx)
-            fieldCoordinates = DataFactory.miladTowerCoordinates
-            waterEntrance = DataFactory.miladEntrance
-            waterOutlet = DataFactory.miladOutlet
-            furrows = DataFactory.miladFurrow
-            slopeXY = 22.3f to 45.3f
         }
     }
 

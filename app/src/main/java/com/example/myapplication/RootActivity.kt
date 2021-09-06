@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityRootBinding
+import com.example.myapplication.data.DataFactory
 import org.locationtech.jts.geom.Coordinate
-import kotlin.random.Random
 
 class RootActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRootBinding
@@ -15,23 +15,6 @@ class RootActivity : AppCompatActivity() {
 
         binding.btnTransect.setOnClickListener {
             startActivity(Intent(this, TransectActivity::class.java))
-        }
-
-        binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked.not()) return@addOnButtonCheckedListener
-
-            when (checkedId) {
-                R.id.btn_milad ->
-                    bindSomeData(
-                        DataFactory.miladTowerCoordinates,
-                        DataFactory.miladFurrow.map { it.copy(onSurfaceHead = it.coordinates.random()) })
-                R.id.btn_azadi ->
-                    bindSomeData(DataFactory.azadiTowerCoordinates)
-                R.id.btn_area1 ->
-                    bindSomeData(DataFactory.area1Coordinates, DataFactory.area1Furrow)
-                R.id.btn_area2 ->
-                    bindSomeData(DataFactory.area2Coordinates)
-            }
         }
 
         with(binding.sliderProgress) {
@@ -64,25 +47,16 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
-        binding.toggleGroup.check(R.id.btn_milad)
-    }
-
-    private fun bindSomeData(
-        coordinates: List<Coordinate>,
-        furrows: List<FarmView.Furrow> = emptyList()
-    ) {
-
-        binding.farm.fieldCoordinates = coordinates
-        binding.farm.waterEntrance = coordinates.random().copy().apply {
-            x -= Random.nextDouble(0.002, 0.004)
-            y -= Random.nextDouble(0.002, 0.004)
+        val azadiTower = DataFactory.readFromAssets(this, "azadi.json")
+        binding.farm.fieldCoordinates =
+            azadiTower.fieldCoordinates.map { Coordinate(it.lat, it.lng) }
+        binding.farm.furrows = azadiTower.furrows.map { coordinateList ->
+            FarmView.Furrow(coordinateList.map { Coordinate(it.lat, it.lng) })
         }
-        binding.farm.waterOutlet = coordinates.random().copy().apply {
-            x -= Random.nextDouble(0.002, 0.004)
-            y -= Random.nextDouble(0.002, 0.004)
-        }
-        binding.farm.furrows = furrows
-
-        binding.farm.slopeXY = Random.nextInt(90).toFloat() to Random.nextInt(90).toFloat()
+        binding.farm.waterOutlet =
+            Coordinate(azadiTower.waterOutlet.lat, azadiTower.waterOutlet.lng)
+        binding.farm.waterEntrance =
+            Coordinate(azadiTower.waterEntrance.lat, azadiTower.waterEntrance.lng)
+        binding.farm.slopeXY = azadiTower.slope.x to azadiTower.slope.y
     }
 }
