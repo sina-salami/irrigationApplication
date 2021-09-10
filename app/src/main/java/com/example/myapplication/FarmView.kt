@@ -276,36 +276,36 @@ class FarmView @JvmOverloads constructor(
     }
 
     private fun refreshBounding() {
-        fieldRect.left = Double.MAX_VALUE
-        fieldRect.top = Double.MAX_VALUE
-        fieldRect.right = Double.MIN_VALUE
-        fieldRect.bottom = Double.MIN_VALUE
+        fieldRect.left = Double.POSITIVE_INFINITY
+        fieldRect.top = Double.NEGATIVE_INFINITY
+        fieldRect.right = Double.NEGATIVE_INFINITY
+        fieldRect.bottom = Double.POSITIVE_INFINITY
 
         for (coordinate in fieldCoordinates) {
-            fieldRect.top = minOf(fieldRect.top, coordinate.y)
-            fieldRect.bottom = maxOf(fieldRect.bottom, coordinate.y)
+            fieldRect.top = maxOf(fieldRect.top, coordinate.y)
+            fieldRect.bottom = minOf(fieldRect.bottom, coordinate.y)
             fieldRect.left = minOf(fieldRect.left, coordinate.x)
             fieldRect.right = maxOf(fieldRect.right, coordinate.x)
         }
 
-        waterEntrance?.let {
-            fieldRect.top = minOf(fieldRect.top, it.y)
-            fieldRect.bottom = maxOf(fieldRect.bottom, it.y)
-            fieldRect.left = minOf(fieldRect.left, it.x)
-            fieldRect.right = maxOf(fieldRect.right, it.x)
+        waterEntrance?.let { coordinate ->
+            fieldRect.top = maxOf(fieldRect.top, coordinate.y)
+            fieldRect.bottom = minOf(fieldRect.bottom, coordinate.y)
+            fieldRect.left = minOf(fieldRect.left, coordinate.x)
+            fieldRect.right = maxOf(fieldRect.right, coordinate.x)
         }
 
-        waterOutlet?.let {
-            fieldRect.top = minOf(fieldRect.top, it.y)
-            fieldRect.bottom = maxOf(fieldRect.bottom, it.y)
-            fieldRect.left = minOf(fieldRect.left, it.x)
-            fieldRect.right = maxOf(fieldRect.right, it.x)
+        waterOutlet?.let { coordinate ->
+            fieldRect.top = maxOf(fieldRect.top, coordinate.y)
+            fieldRect.bottom = minOf(fieldRect.bottom, coordinate.y)
+            fieldRect.left = minOf(fieldRect.left, coordinate.x)
+            fieldRect.right = maxOf(fieldRect.right, coordinate.x)
         }
 
         for (furrow in furrows) {
             for (coordinate in furrow.coordinates) {
-                fieldRect.top = minOf(fieldRect.top, coordinate.y)
-                fieldRect.bottom = maxOf(fieldRect.bottom, coordinate.y)
+                fieldRect.top = maxOf(fieldRect.top, coordinate.y)
+                fieldRect.bottom = minOf(fieldRect.bottom, coordinate.y)
                 fieldRect.left = minOf(fieldRect.left, coordinate.x)
                 fieldRect.right = maxOf(fieldRect.right, coordinate.x)
             }
@@ -322,7 +322,7 @@ class FarmView @JvmOverloads constructor(
 
         outPoint.set(
             ((coordinate.x - fieldRect.left) * multiple).toFloat() + paddingLeft,
-            ((coordinate.y - fieldRect.top) * multiple).toFloat() + paddingTop
+            ((-(coordinate.y - fieldRect.top)) * multiple).toFloat() + paddingTop
         )
         return outPoint
     }
@@ -354,7 +354,7 @@ class FarmView @JvmOverloads constructor(
         var right: Double = 0.0,
         var bottom: Double = 0.0
     ) {
-        val height: Double get() = bottom - top
-        val width: Double get() = right - left
+        val height: Double get() = abs(bottom - top)
+        val width: Double get() = abs(right - left)
     }
 }

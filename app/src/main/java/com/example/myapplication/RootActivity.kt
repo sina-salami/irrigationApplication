@@ -47,16 +47,19 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
-        val azadiTower = DataFactory.readFromAssets(this, "azadi.json")
+        // val mockData = DataFactory.readFromAssets(this, "milad.json")
+        // val mockData = DataFactory.readFromAssets(this, "newyork.json")
+        val mockData = DataFactory.readFromAssets(this, "rio.json")
+
         binding.farm.fieldCoordinates =
-            azadiTower.fieldCoordinates.map { Coordinate(it.lat, it.lng) }
-        binding.farm.furrows = azadiTower.furrows.map { coordinateList ->
+            mockData.fieldCoordinates.map { Coordinate(it.lat, it.lng) }
+        binding.farm.furrows = mockData.furrows.map { coordinateList ->
             FarmView.Furrow(coordinateList.map { Coordinate(it.lat, it.lng) })
         }
         binding.farm.waterOutlet =
-            Coordinate(azadiTower.waterOutlet.lat, azadiTower.waterOutlet.lng)
+            Coordinate(mockData.waterOutlet.lat, mockData.waterOutlet.lng)
         binding.farm.waterEntrance =
-            Coordinate(azadiTower.waterEntrance.lat, azadiTower.waterEntrance.lng)
-        binding.farm.slopeXY = azadiTower.slope.x to azadiTower.slope.y
+            Coordinate(mockData.waterEntrance.lat, mockData.waterEntrance.lng)
+        binding.farm.slopeXY = mockData.slope.x to mockData.slope.y
     }
 }
