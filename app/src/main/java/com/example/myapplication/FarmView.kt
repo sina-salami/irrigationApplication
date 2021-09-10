@@ -12,8 +12,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.graphics.withRotation
-import androidx.core.view.setPadding
-import com.example.myapplication.data.DataFactory
 import org.locationtech.jts.algorithm.Length
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
@@ -65,7 +63,6 @@ class FarmView @JvmOverloads constructor(
         color = Color.RED
         strokeWidth = 2f.toPx
     }
-
 
     private val waterEntrancePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -185,7 +182,7 @@ class FarmView @JvmOverloads constructor(
                     _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
                     furrow.onSurfaceHead == null -> break@loop
                     lastCoordinate != null &&
-                            furrow.onSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
+                        furrow.onSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
                         val onSurfacePoint = convert(furrow.onSurfaceHead, _tempPoint)
                         _tempPath.lineTo(onSurfacePoint.x, onSurfacePoint.y)
                         break@loop
@@ -214,7 +211,7 @@ class FarmView @JvmOverloads constructor(
                     _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
                     furrow.underSurfaceHead == null -> break@loop
                     lastCoordinate != null &&
-                            furrow.underSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
+                        furrow.underSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
                         val underSurfacePoint = convert(furrow.underSurfaceHead, _tempPoint)
                         _tempPath.lineTo(underSurfacePoint.x, underSurfacePoint.y)
                         break@loop
@@ -260,22 +257,22 @@ class FarmView @JvmOverloads constructor(
         val width = width - paddingLeft - paddingRight
         val height = height - paddingTop - paddingBottom
 
-        val multipleY = height / (fieldRect.bottom - fieldRect.top)
-        val multipleX = width / (fieldRect.right - fieldRect.left)
+        val multipleY = height / fieldRect.height
+        val multipleX = width / fieldRect.width
         val multiple = minOf(multipleX, multipleY)
 
-        return (abs(width - ((fieldRect.right - fieldRect.left) * multiple)) / 2f).toFloat()
+        return (abs(width - (fieldRect.width * multiple)) / 2f).toFloat()
     }
 
     private fun offsetY(): Float {
         val width = width - paddingLeft - paddingRight
         val height = height - paddingTop - paddingBottom
 
-        val multipleY = height / (fieldRect.bottom - fieldRect.top)
-        val multipleX = width / (fieldRect.right - fieldRect.left)
+        val multipleY = height / fieldRect.height
+        val multipleX = width / fieldRect.width
         val multiple = minOf(multipleX, multipleY)
 
-        return (abs(height - ((fieldRect.bottom - fieldRect.top) * multiple)) / 2f).toFloat()
+        return (abs(height - (fieldRect.height * multiple)) / 2f).toFloat()
     }
 
     private fun refreshBounding() {
@@ -319,8 +316,8 @@ class FarmView @JvmOverloads constructor(
         val width = width - paddingLeft - paddingRight
         val height = height - paddingTop - paddingBottom
 
-        val multipleY = height / (fieldRect.bottom - fieldRect.top)
-        val multipleX = width / (fieldRect.right - fieldRect.left)
+        val multipleY = height / fieldRect.height
+        val multipleX = width / fieldRect.width
         val multiple = minOf(multipleX, multipleY)
 
         outPoint.set(
@@ -356,5 +353,8 @@ class FarmView @JvmOverloads constructor(
         var top: Double = 0.0,
         var right: Double = 0.0,
         var bottom: Double = 0.0
-    )
+    ) {
+        val height: Double get() = bottom - top
+        val width: Double get() = right - left
+    }
 }
