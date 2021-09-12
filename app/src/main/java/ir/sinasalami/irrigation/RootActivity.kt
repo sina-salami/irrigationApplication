@@ -1,10 +1,10 @@
-package com.example.myapplication
+package ir.sinasalami.irrigation
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.databinding.ActivityRootBinding
-import com.example.myapplication.data.DataFactory
+import ir.sinasalami.irrigation.data.DataFactory
+import ir.sinasalami.irrigation.databinding.ActivityRootBinding
 import org.locationtech.jts.geom.Coordinate
 
 class RootActivity : AppCompatActivity() {

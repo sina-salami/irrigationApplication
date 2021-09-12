@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package ir.sinasalami.irrigation.data
 
 
 data class JRoot(

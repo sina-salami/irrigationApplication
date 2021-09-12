@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package ir.sinasalami.irrigation.data
 
 import android.content.Context
 import com.google.gson.Gson

@@ -1,8 +1,8 @@
-package com.example.myapplication
+package ir.sinasalami.irrigation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.databinding.ActivityTransectBinding
+import ir.sinasalami.irrigation.databinding.ActivityTransectBinding
 
 class TransectActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransectBinding
@@ -56,6 +56,5 @@ class TransectActivity : AppCompatActivity() {
         binding.sliderHigh.value = 90f
         binding.sliderHeight.value = 80f
         binding.sliderWaterHeight.value = 50f
-
     }
 }

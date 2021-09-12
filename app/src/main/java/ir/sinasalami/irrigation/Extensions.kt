@@ -1,4 +1,4 @@
-package com.example.myapplication
+package ir.sinasalami.irrigation
 
 import android.content.res.Resources
 import org.locationtech.jts.geom.Coordinate
