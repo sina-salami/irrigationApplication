@@ -37,6 +37,7 @@ class RootActivity : AppCompatActivity() {
 
         // val mockData = DataFactory.readFromAssets(this, "milad.json")
         // val mockData = DataFactory.readFromAssets(this, "newyork.json")
+        // val mockData = DataFactory.readFromAssets(this, "sample.json")
         val mockData = DataFactory.readFromAssets(this, "rio.json")
 
         binding.farm.fieldCoordinates =
