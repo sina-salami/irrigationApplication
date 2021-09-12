@@ -25,25 +25,13 @@ class RootActivity : AppCompatActivity() {
             addOnChangeListener { slider, _, _ ->
                 val (firstValue, secondValue) = slider.values
 
-                binding.farm.furrows = binding.farm.furrows.map {
-                    val onSurfaceProgress =
-                        (secondValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
-                    val underSurfaceProgress =
-                        (firstValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
+                val onSurfaceProgress =
+                    (secondValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
+                val underSurfaceProgress =
+                    (firstValue - slider.valueFrom) / (slider.valueTo - slider.valueFrom)
 
-                    val furrowTotalLength = it.calculateTotalLength()
-
-                    val onSurfaceLength = furrowTotalLength * onSurfaceProgress
-                    val underSurfaceLength = furrowTotalLength * underSurfaceProgress
-
-                    val headOfOnSurface = it.calculateCoordinateOf(length = onSurfaceLength)
-                    val headOfUnderSurface = it.calculateCoordinateOf(length = underSurfaceLength)
-
-                    it.copy(
-                        onSurfaceHead = headOfOnSurface,
-                        underSurfaceHead = headOfUnderSurface
-                    )
-                }
+                binding.farm.onSurfacePercent = (onSurfaceProgress * 100).toInt()
+                binding.farm.underSurfacePercent = (underSurfaceProgress * 100).toInt()
             }
         }
 

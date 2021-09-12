@@ -36,6 +36,16 @@ class FarmView @JvmOverloads constructor(
             refreshBounding()
             invalidate()
         }
+    var onSurfacePercent: Int? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
+    var underSurfacePercent: Int? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
     var waterEntrance: Coordinate? = null
         set(value) {
             field = value
@@ -171,8 +181,14 @@ class FarmView @JvmOverloads constructor(
     }
 
     private fun drawOnSurfaceFurrows(canvas: Canvas) {
+        val finalPercent = onSurfacePercent ?: return
+
         for (furrow in furrows) {
             _tempPath.reset()
+
+            val totalLength = furrow.calculateTotalLength()
+            val headLength = totalLength * finalPercent / 100
+            val headCoordinate = furrow.calculateCoordinateOf(headLength)
 
             var lastCoordinate: Coordinate? = null
             loop@ for (coordinate in furrow.coordinates) {
@@ -180,10 +196,10 @@ class FarmView @JvmOverloads constructor(
 
                 when {
                     _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
-                    furrow.onSurfaceHead == null -> break@loop
+                    headCoordinate == null -> break@loop
                     lastCoordinate != null &&
-                        furrow.onSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
-                        val onSurfacePoint = convert(furrow.onSurfaceHead, _tempPoint)
+                        headCoordinate.isBetween(lastCoordinate, coordinate) -> {
+                        val onSurfacePoint = convert(headCoordinate, _tempPoint)
                         _tempPath.lineTo(onSurfacePoint.x, onSurfacePoint.y)
                         break@loop
                     }
@@ -200,8 +216,14 @@ class FarmView @JvmOverloads constructor(
     }
 
     private fun drawUnderSurfaceFurrows(canvas: Canvas) {
+        val finalPercent = underSurfacePercent ?: return
+
         for (furrow in furrows) {
             _tempPath.reset()
+
+            val totalLength = furrow.calculateTotalLength()
+            val headLength = totalLength * finalPercent / 100
+            val headCoordinate = furrow.calculateCoordinateOf(headLength)
 
             var lastCoordinate: Coordinate? = null
             loop@ for (coordinate in furrow.coordinates) {
@@ -209,10 +231,10 @@ class FarmView @JvmOverloads constructor(
 
                 when {
                     _tempPath.isEmpty -> _tempPath.moveTo(point.x, point.y)
-                    furrow.underSurfaceHead == null -> break@loop
+                    headCoordinate == null -> break@loop
                     lastCoordinate != null &&
-                        furrow.underSurfaceHead.isBetween(lastCoordinate, coordinate) -> {
-                        val underSurfacePoint = convert(furrow.underSurfaceHead, _tempPoint)
+                        headCoordinate.isBetween(lastCoordinate, coordinate) -> {
+                        val underSurfacePoint = convert(headCoordinate, _tempPoint)
                         _tempPath.lineTo(underSurfacePoint.x, underSurfacePoint.y)
                         break@loop
                     }
@@ -327,13 +349,7 @@ class FarmView @JvmOverloads constructor(
         return outPoint
     }
 
-    data class Furrow(
-        val coordinates: List<Coordinate>,
-        val onSurfaceHead: Coordinate? = null,
-        val underSurfaceHead: Coordinate? = null
-    ) {
-        private val geometryFactory = GeometryFactory()
-
+    data class Furrow(val coordinates: List<Coordinate>) {
         fun calculateTotalLength(): Double {
             return Length.ofLine(GeometryFactory().coordinateSequenceFactory.create(coordinates.toTypedArray()))
         }
